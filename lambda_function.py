@@ -22,8 +22,8 @@ from ask_sdk_model.slu.entityresolution import StatusCode
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-initial_prompt = "I can help you find the perfect dog for you. Do you want a small, medium or large sized dog?"
-default_reprompt = "Do you want a small, medium or large sized dog?"
+initial_prompt = 'This is find my best dog. Are you ready to find the best dog for you?'
+default_reprompt = 'Are you ready to find the best dog for you?'
 
 
 # Request Handler classes
@@ -36,8 +36,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In LaunchRequestHandler")
-        speech = 'Welcome to find a dog. Are you ready to find the best dog for you?'
-        reprompt = 'Are you ready to find the best dog for you?'
+        speech = initial_prompt
+        reprompt = default_reprompt
         handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
 
@@ -100,27 +100,19 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
         try:
             response = http_get(pet_match_options)
 
-            # Second part of my hack
-            # if response["result"]:
             if response['breed']:
-                speech = """So your answers didn't matter. David is not a good enough developer to actually make 
-                a decent skill. So I picked out the {breed} for you at random. {description}""".format(
+                speech = """A good {energy_level} energy level dog is the {breed}. {description}""".format(
+                    energy_level=slot_values["energy"]["resolved"],
                     breed=response["breed"],
                     description=response.get('description', '')
                 )
 
             else:
-                speech = ("I am sorry I could not find a match for a "
-                          "{} "
-                          "{} "
-                          "{} energy dog".format(
-                    slot_values["size"]["resolved"],
-                    slot_values["temperament"]["resolved"],
+                speech = "I am sorry I could not find a match for a {} energy dog".format(
                     slot_values["energy"]["resolved"])
-                )
+
         except Exception as e:
-            speech = ("I am really sorry. I am unable to access part of my "
-                      "memory. Please try again later")
+            speech = "I am really sorry. I am unable to access part of my memory. Please try again later"
             logger.info("Intent: {}: message: {}".format(
                 handler_input.request_envelope.request.intent.name, str(e)))
 
@@ -140,9 +132,8 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In FallbackIntentHandler")
-        speech = ("I'm sorry Pet Match can't help you with that. I can help you find the perfect dog"
-                  'for you. Do you want a small, medium or large sized dog?')
-        reprompt = "Do you want a small, medium or large sized dog?"
+        speech = "I'm sorry I can't help you with that. {}".format(initial_prompt)
+        reprompt = default_reprompt
         handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
 
@@ -156,9 +147,8 @@ class HelpIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In HelpIntentHandler")
-        speech = ("This is pet match. I can help you find the perfect pet "
-                  "for you. You can say, I want a dog.")
-        reprompt = "What size and temperament are you looking for in a dog?"
+        speech = initial_prompt
+        reprompt = default_reprompt
 
         handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
@@ -228,24 +218,7 @@ class ResponseLogger(AbstractResponseInterceptor):
 
 
 # Data
-required_slots = ["energy", "size", "temperament"]
-
-slots_meta = {
-    "pet": {
-        "invalid_responses": [
-            "I'm sorry, but I'm not qualified to match you with {}s.",
-            "Ah yes, {}s are splendid creatures, but unfortunately owning one as a pet is outlawed.",
-            "I'm sorry I can't match you with {}s."
-        ]
-    },
-    "error_default": "I'm sorry I can't match you with {}s."
-}
-
-pet_match_api = {
-    "host_name": "e4v7rdwl7l.execute-api.us-east-1.amazonaws.com",
-    "pets": "/Test",
-    "port": 443
-}
+required_slots = ["energy"]
 
 
 # Utility functions
