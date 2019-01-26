@@ -19,17 +19,19 @@
                     "name": "PetMatchIntent",
                     "slots": [
                         {
-                            "name": "size",
-                            "type": "sizeType",
-                            "samples": [
-                                "{size}"
-                            ]
-                        },
-                        {
                             "name": "energy",
                             "type": "energyType",
                             "samples": [
+                                "{energy} energy",
                                 "{energy}"
+                            ]
+                        },
+                        {
+                            "name": "playfulness",
+                            "type": "playfulnessType",
+                            "samples": [
+                                "{playfulness} playful",
+                                "{playfulness}"
                             ]
                         },
                         {
@@ -55,9 +57,11 @@
                     "name": "energyType",
                     "values": [
                         {
+                            "id": "1",
                             "name": {
                                 "value": "low",
                                 "synonyms": [
+                                    "chill",
                                     "low energy",
                                     "to cuddle with",
                                     "to watch netflix with",
@@ -66,9 +70,13 @@
                             }
                         },
                         {
+                            "id": "2",
                             "name": {
                                 "value": "medium",
                                 "synonyms": [
+                                    "medium",
+                                    "mid",
+                                    "middle",
                                     "medium energy",
                                     "for my apartment",
                                     "fun to play with",
@@ -78,6 +86,7 @@
                             }
                         },
                         {
+                            "id": "3",
                             "name": {
                                 "value": "high",
                                 "synonyms": [
@@ -95,58 +104,42 @@
                     ]
                 },
                 {
-                    "name": "sizeType",
+                    "name": "playfulnessType",
                     "values": [
                         {
+                            "id": "1",
                             "name": {
-                                "value": "large",
+                                "value": "low",
                                 "synonyms": [
-                                    "large size",
-                                    "huge",
-                                    "truck",
-                                    "gigantic",
-                                    "eat me out of house",
-                                    "scary big",
-                                    "ginormous",
-                                    "ride",
-                                    "waist height"
+                                    "chill",
+                                    "low playful",
+                                    "not very",
+                                    "serious",
+                                    "lazy"
                                 ]
                             }
                         },
                         {
+                            "id": "2",
                             "name": {
                                 "value": "medium",
                                 "synonyms": [
-                                    "medium size",
-                                    "bigger than a cat",
-                                    "on the bed",
-                                    "up to my knees",
-                                    "average"
+                                    "medium",
+                                    "mid",
+                                    "middle",
+                                    "kinda",
+                                    "somewhat"
                                 ]
                             }
                         },
                         {
+                            "id": "3",
                             "name": {
-                                "value": "small",
+                                "value": "high",
                                 "synonyms": [
-                                    "small size",
-                                    "little",
-                                    "take on an airplane"
-                                ]
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "tiny",
-                                "synonyms": [
-                                    "tiny size",
-                                    "cheap to feed",
-                                    "teacup",
-                                    "pocket",
-                                    "yippy",
-                                    "carry in my purse",
-                                    "put in my pocket",
-                                    "itty bitty"
+                                    "super playful",
+                                    "loves to play",
+                                    "a joker"
                                 ]
                             }
                         }
@@ -185,15 +178,6 @@
                     "prompts": {},
                     "slots": [
                         {
-                            "name": "size",
-                            "type": "sizeType",
-                            "confirmationRequired": false,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "elicitation": "Elicit.Intent-PetMatchIntent.IntentSlot-size"
-                            }
-                        },
-                        {
                             "name": "energy",
                             "type": "energyType",
                             "confirmationRequired": false,
@@ -208,6 +192,15 @@
                             "confirmationRequired": false,
                             "elicitationRequired": false,
                             "prompts": {}
+                        },
+                        {
+                            "name": "playfulness",
+                            "type": "playfulnessType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1117397975791.176377070562"
+                            }
                         }
                     ]
                 }
@@ -242,7 +235,25 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "Do you prefer high energy or low energy dogs?"
+                        "value": "Do you want a dog that is high energy, low energy or in the middle?"
+                    }
+                ]
+            },
+            {
+                "id": "Confirm.Slot.1480485676149.229676048454",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "So you want a dog that is {energy}  energy?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1117397975791.176377070562",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What level of playfulness do you want  low, medium or high?"
                     }
                 ]
             }

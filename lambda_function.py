@@ -101,15 +101,19 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
             response = http_get(pet_match_options)
 
             if response['breed']:
-                speech = """A good {energy_level} energy level dog is the {breed}. {description}""".format(
+                speech = """A good {energy_level} energy level dog that is {playfulness} playful 
+                is the {breed}. {description}""".format(
                     energy_level=slot_values["energy"]["resolved"],
+                    playfulness=slot_values['playfulness']['resolved'],
                     breed=response["breed"],
                     description=response.get('description', '')
                 )
 
             else:
-                speech = "I am sorry I could not find a match for a {} energy dog".format(
-                    slot_values["energy"]["resolved"])
+                speech = "I am sorry I could not find a match for a {} energy and {} playful dog".format(
+                    slot_values["energy"]["resolved"],
+                    slot_values["playfulness"]["resolved"],
+                )
 
         except Exception as e:
             speech = "I am really sorry. I am unable to access part of my memory. Please try again later"
@@ -218,7 +222,7 @@ class ResponseLogger(AbstractResponseInterceptor):
 
 
 # Data
-required_slots = ["energy"]
+required_slots = ["energy", "playfulness"]
 
 
 # Utility functions
@@ -280,7 +284,8 @@ def build_pet_match_options(slot_values):
     """Return options for HTTP Get call."""
 
     return {
-        'energy_level': slot_values["energy"]["resolved"],
+        'energy_level': slot_values['energy']['resolved'],
+        'playfulness': slot_values['playfulness']['resolved']
     }
 
 
