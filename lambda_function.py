@@ -54,31 +54,29 @@ class InProgressPetMatchIntent(AbstractRequestHandler):
         current_intent = handler_input.request_envelope.request.intent
         prompt = ""
 
-        for slot_name, current_slot in six.iteritems(
-                current_intent.slots):
-            if slot_name not in ["article", "at_the", "I_Want"]:
-                if (current_slot.confirmation_status != SlotConfirmationStatus.CONFIRMED
-                        and current_slot.resolutions
-                        and current_slot.resolutions.resolutions_per_authority[0]):
-                    if current_slot.resolutions.resolutions_per_authority[0].status.code == StatusCode.ER_SUCCESS_MATCH:
-                        if len(current_slot.resolutions.resolutions_per_authority[0].values) > 1:
-                            prompt = "Which would you like "
+        for slot_name, current_slot in current_intent.slots.items():
+            if (current_slot.confirmation_status != SlotConfirmationStatus.CONFIRMED
+                    and current_slot.resolutions
+                    and current_slot.resolutions.resolutions_per_authority[0]):
+                if current_slot.resolutions.resolutions_per_authority[0].status.code == StatusCode.ER_SUCCESS_MATCH:
+                    if len(current_slot.resolutions.resolutions_per_authority[0].values) > 1:
+                        prompt = "Which would you like "
 
-                            values = " or ".join([e.value.name for e in current_slot.resolutions.resolutions_per_authority[0].values])
-                            prompt += values + " ?"
-                            return handler_input.response_builder.speak(
-                                prompt).ask(prompt).add_directive(
-                                ElicitSlotDirective(slot_to_elicit=current_slot.name)
-                            ).response
-                    elif current_slot.resolutions.resolutions_per_authority[0].status.code == StatusCode.ER_SUCCESS_NO_MATCH:
-                        if current_slot.name in required_slots:
-                            prompt = "What {} are you looking for?".format(current_slot.name)
+                        values = " or ".join([e.value.name for e in current_slot.resolutions.resolutions_per_authority[0].values])
+                        prompt += values + " ?"
+                        return handler_input.response_builder.speak(
+                            prompt).ask(prompt).add_directive(
+                            ElicitSlotDirective(slot_to_elicit=current_slot.name)
+                        ).response
+                elif current_slot.resolutions.resolutions_per_authority[0].status.code == StatusCode.ER_SUCCESS_NO_MATCH:
+                    if current_slot.name in required_slots:
+                        prompt = "What {} are you looking for?".format(current_slot.name)
 
-                            return handler_input.response_builder.speak(
-                                prompt).ask(prompt).add_directive(
-                                    ElicitSlotDirective(
-                                        slot_to_elicit=current_slot.name
-                                    )).response
+                        return handler_input.response_builder.speak(
+                            prompt).ask(prompt).add_directive(
+                                ElicitSlotDirective(
+                                    slot_to_elicit=current_slot.name
+                                )).response
 
         return handler_input.response_builder.add_directive(
             DelegateDirective(
@@ -97,9 +95,7 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
         logger.info("In CompletedPetMatchIntent")
         filled_slots = handler_input.request_envelope.request.intent.slots
         slot_values = get_slot_values(filled_slots)
-        pet_match_options = build_pet_match_options(
-            host_name=pet_match_api["host_name"], path=pet_match_api["pets"],
-            port=pet_match_api["port"], slot_values=slot_values)
+        pet_match_options = build_pet_match_options(slot_values=slot_values)
 
         try:
             response = http_get(pet_match_options)
@@ -307,30 +303,17 @@ def random_phrase(str_list):
     return random.choice(str_list)
 
 
-def build_pet_match_options(host_name, path, port, slot_values):
+def build_pet_match_options(slot_values):
     """Return options for HTTP Get call."""
-    # type: (str, str, int, Dict[str, Any]) -> Dict
-    path_params = {
-        "SSET": "canine-{}-{}".format(
-            slot_values["energy"]["resolved"],
-            slot_values["size"]["resolved"])
-    }
-    if host_name[:4] != "http":
-        host_name = "https://{}".format(host_name)
-    url = "{}:{}{}".format(host_name, str(port), path)
+
     return {
-        "url": url,
-        "path_params": path_params
+        'energy_level': slot_values["energy"]["resolved"],
     }
 
 
-def http_get(http_options):
-    url = http_options["url"]
-    params = http_options["path_params"]
-    response = requests.get(url=url, params=params)
-
-    # My hack to see if I can connect to my api
-    response = requests.get('https://68hccqr7x6.execute-api.us-east-1.amazonaws.com/dev/dog/random')
+def http_get(params):
+    base_url = 'https://68hccqr7x6.execute-api.us-east-1.amazonaws.com/dev/dog/alexa'
+    response = requests.get(url=base_url, params=params)
 
     if response.status_code < 200 or response.status_code >= 300:
         response.raise_for_status()
