@@ -22,41 +22,15 @@
                             "name": "size",
                             "type": "sizeType",
                             "samples": [
-                                "{I_Want} {article} {size}",
-                                "{I_Want} {size}",
-                                "the {size}",
-                                "Something i can {size}",
-                                "{size} size",
-                                "{I_Want} {article} {size} that {energy}",
-                                "{I_Want} {article} {size} {temperament}",
-                                "{I_Want} {article} {size} {temperament} to {energy}",
-                                " {temperament}",
-                                "{energy} energy",
                                 "{size}"
                             ]
-                        },
-                        {
-                            "name": "temperament",
-                            "type": "temperamentType",
-                            "samples": [
-                                "{temperament}"
-                            ]
-                        },
-                        {
-                            "name": "I_Want",
-                            "type": "IWantType"
                         },
                         {
                             "name": "energy",
                             "type": "energyType",
                             "samples": [
-                                "{energy} energy",
-                                "{I_Want} to {energy}"
+                                "{energy}"
                             ]
-                        },
-                        {
-                            "name": "article",
-                            "type": "articleType"
                         },
                         {
                             "name": "yes",
@@ -77,26 +51,6 @@
                 }
             ],
             "types": [
-                {
-                    "name": "articleType",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "a"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "an"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "the"
-                            }
-                        }
-                    ]
-                },
                 {
                     "name": "energyType",
                     "values": [
@@ -136,51 +90,6 @@
                                     "energetic",
                                     "high energy"
                                 ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "IWantType",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "my favorite is"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "I prefer"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "let's find"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "we like"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "we would like"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "how about"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "I want"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "I like"
                             }
                         }
                     ]
@@ -244,57 +153,6 @@
                     ]
                 },
                 {
-                    "name": "temperamentType",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "watch",
-                                "synonyms": [
-                                    "adult",
-                                    "barks at people"
-                                ]
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "guard",
-                                "synonyms": [
-                                    "to protect me",
-                                    "protective"
-                                ]
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "family",
-                                "synonyms": [
-                                    "hang out",
-                                    "hang out with kids",
-                                    "is kid friendly",
-                                    "good with kids",
-                                    "family friends",
-                                    "gentle with kids"
-                                ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "AMAZON.Animal",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "mythical_creatures",
-                                "synonyms": [
-                                    "unicorn",
-                                    "chimera",
-                                    "dragon"
-                                ]
-                            }
-                        }
-                    ]
-                },
-                {
                     "name": "yesType",
                     "values": [
                         {
@@ -336,22 +194,6 @@
                             }
                         },
                         {
-                            "name": "temperament",
-                            "type": "temperamentType",
-                            "confirmationRequired": false,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "elicitation": "Elicit.Intent-PetMatchIntent.IntentSlot-temperament"
-                            }
-                        },
-                        {
-                            "name": "I_Want",
-                            "type": "IWantType",
-                            "confirmationRequired": false,
-                            "elicitationRequired": false,
-                            "prompts": {}
-                        },
-                        {
                             "name": "energy",
                             "type": "energyType",
                             "confirmationRequired": false,
@@ -359,13 +201,6 @@
                             "prompts": {
                                 "elicitation": "Elicit.Intent-PetMatchIntent.IntentSlot-energy"
                             }
-                        },
-                        {
-                            "name": "article",
-                            "type": "articleType",
-                            "confirmationRequired": false,
-                            "elicitationRequired": false,
-                            "prompts": {}
                         },
                         {
                             "name": "yes",
@@ -385,11 +220,7 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "There are dogs that are tiny, small, medium, and large. Which would you like?"
-                    },
-                    {
-                        "type": "PlainText",
-                        "value": "What size of a dog would you like?"
+                        "value": "Do you want a small, medium, or large dog?"
                     }
                 ]
             },

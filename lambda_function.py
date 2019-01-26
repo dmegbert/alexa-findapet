@@ -300,19 +300,20 @@ def get_slot_values(filled_slots):
             }
     return slot_values
 
+
 def random_phrase(str_list):
     """Return random element from list."""
     # type: List[str] -> str
     return random.choice(str_list)
 
+
 def build_pet_match_options(host_name, path, port, slot_values):
     """Return options for HTTP Get call."""
     # type: (str, str, int, Dict[str, Any]) -> Dict
     path_params = {
-        "SSET": "canine-{}-{}-{}".format(
+        "SSET": "canine-{}-{}".format(
             slot_values["energy"]["resolved"],
-            slot_values["size"]["resolved"],
-            slot_values["temperament"]["resolved"])
+            slot_values["size"]["resolved"])
     }
     if host_name[:4] != "http":
         host_name = "https://{}".format(host_name)
