@@ -100,13 +100,15 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
         try:
             response = http_get(pet_match_options)
 
-            if response['breed']:
-                speech = """A good {energy_level} energy level dog that is {playfulness} playful and is {affection} 
-                affectionate is the {breed}. If you would like to learn more about {breed}, 
+            if response['breed'] and response['breed'] != 'None':
+                speech = """A {weight}, {energy_level} energy dog that {playfulness} playful and is {affection} 
+                affectionate and {training} to train is the {breed}. If you would like to learn more about {breed}, 
                 say personality, description, or history.""".format(
                     energy_level=slot_values["energy"]["resolved"],
                     playfulness=slot_values['playfulness']['resolved'],
                     affection=slot_values['affection']['resolved'],
+                    training=slot_values['training']['resolved'],
+                    weight=slot_values['weight']['resolved'],
                     breed=response["breed"]
                 )
 
@@ -120,10 +122,12 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
                 handler_input.attributes_manager.session_attributes = session_info
 
             else:
-                speech = """I am sorry I could not find a match for a {} energy, {} playful, 
-                and {} affectionate dog""".format(
+                speech = """I am sorry I could not find a match for a {} {} energy, {} playful, {} easy to train
+                and {} affectionate dog. But you can cuddle with me. Do you want to try again?""".format(
+                    slot_values['weight']['resolved'],
                     slot_values["energy"]["resolved"],
                     slot_values["playfulness"]["resolved"],
+                    slot_values['training']['resolved'],
                     slot_values['affection']['resolved']
                 )
 
@@ -270,7 +274,7 @@ class ResponseLogger(AbstractResponseInterceptor):
 
 
 # Data
-required_slots = ["energy", "playfulness", "affection"]
+required_slots = ["energy", "playfulness", "affection", 'training', 'weight']
 
 
 # Utility functions
@@ -334,7 +338,9 @@ def build_pet_match_options(slot_values):
     return {
         'energy_level': slot_values['energy']['resolved'],
         'playfulness': slot_values['playfulness']['resolved'],
-        'affection': slot_values['affection']['resolved']
+        'affection': slot_values['affection']['resolved'],
+        'training': slot_values['training']['resolved'],
+        'weight': slot_values['weight']['resolved']
     }
 
 
