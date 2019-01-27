@@ -70,7 +70,7 @@ class InProgressPetMatchIntent(AbstractRequestHandler):
                         ).response
                 elif current_slot.resolutions.resolutions_per_authority[0].status.code == StatusCode.ER_SUCCESS_NO_MATCH:
                     if current_slot.name in required_slots:
-                        prompt = "What {} are you looking for?".format(current_slot.name)
+                        prompt = "Do you want {} to be low, medium, or high?".format(current_slot.name)
 
                         return handler_input.response_builder.speak(
                             prompt).ask(prompt).add_directive(
@@ -88,7 +88,7 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         return (is_intent_name("PetMatchIntent")(handler_input)
-            and handler_input.request_envelope.request.dialog_state == DialogState.COMPLETED)
+                and handler_input.request_envelope.request.dialog_state == DialogState.COMPLETED)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -102,12 +102,21 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
 
             if response['breed']:
                 speech = """A good {energy_level} energy level dog that is {playfulness} playful 
-                is the {breed}. {description}""".format(
+                is the {breed}. If you would like to learn more about {breed}, 
+                say personality, description, or history.""".format(
                     energy_level=slot_values["energy"]["resolved"],
                     playfulness=slot_values['playfulness']['resolved'],
-                    breed=response["breed"],
-                    description=response.get('description', '')
+                    breed=response["breed"]
                 )
+
+                # set session info for persistence
+                session_info = {
+                    'breed': response['breed'],
+                    'description': response.get('description', ''),
+                    'personality': response.get('personality', ''),
+                    'history': response.get('history')
+                }
+                handler_input.attributes_manager.session_attributes = session_info
 
             else:
                 speech = "I am sorry I could not find a match for a {} energy and {} playful dog".format(
@@ -120,7 +129,40 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
             logger.info("Intent: {}: message: {}".format(
                 handler_input.request_envelope.request.intent.name, str(e)))
 
-        return handler_input.response_builder.speak(speech).response
+        handler_input.response_builder.speak(speech).ask(speech)
+        return handler_input.response_builder.response
+
+
+class DogInfoIntentHandler(AbstractRequestHandler):
+    """Handler Dog Info Intent."""
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("DogInfoIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        session_info = handler_input.attributes_manager.session_attributes
+
+        reprompt = "If you want more information about {breed}, say personality, description, or history.".format(
+            breed=session_info['breed'])
+
+        slot_values = handler_input.request_envelope.request.intent.slots
+
+        if slot_values.get('personality').value:
+            speech_text = "{personality} To learn more say description or history".format(
+                personality=session_info['personality'])
+        elif slot_values.get('description').value:
+            speech_text = "{description} To learn more say history or personality".format(
+                description=session_info['description'])
+        elif slot_values.get('history').value:
+            speech_text = "{history} To learn more say personality or description".format(
+                history=session_info['history'])
+        else:
+            speech_text = reprompt
+
+        handler_input.attributes_manager.session_attributes = session_info
+        handler_input.response_builder.speak(speech_text).ask(reprompt)
+        return handler_input.response_builder.response
 
 
 class FallbackIntentHandler(AbstractRequestHandler):
@@ -168,7 +210,9 @@ class ExitIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In ExitIntentHandler")
-        handler_input.response_builder.speak("I don't interrupt you! Geez, asshole.").set_should_end_session(
+        goodbye_speech = """Remember this is just for fun. You are not getting a dog. 
+        Robot voiced personal assistants are truly the best pets. You don't need a stupid app to know that!!!"""
+        handler_input.response_builder.speak(goodbye_speech).set_should_end_session(
             True)
         return handler_input.response_builder.response
 
@@ -185,6 +229,7 @@ class SessionEndedRequestHandler(AbstractRequestHandler):
         logger.info("Session ended with reason: {}".format(
             handler_input.request_envelope.request.reason))
         return handler_input.response_builder.response
+
 
 # Exception Handler classes
 class CatchAllExceptionHandler(AbstractExceptionHandler):
@@ -306,6 +351,7 @@ sb = SkillBuilder()
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(InProgressPetMatchIntent())
 sb.add_request_handler(CompletedPetMatchIntent())
+sb.add_request_handler(DogInfoIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(ExitIntentHandler())
