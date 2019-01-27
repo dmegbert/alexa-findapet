@@ -101,11 +101,12 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
             response = http_get(pet_match_options)
 
             if response['breed']:
-                speech = """A good {energy_level} energy level dog that is {playfulness} playful 
-                is the {breed}. If you would like to learn more about {breed}, 
+                speech = """A good {energy_level} energy level dog that is {playfulness} playful and is {affection} 
+                affectionate is the {breed}. If you would like to learn more about {breed}, 
                 say personality, description, or history.""".format(
                     energy_level=slot_values["energy"]["resolved"],
                     playfulness=slot_values['playfulness']['resolved'],
+                    affection=slot_values['affection']['resolved'],
                     breed=response["breed"]
                 )
 
@@ -119,9 +120,11 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
                 handler_input.attributes_manager.session_attributes = session_info
 
             else:
-                speech = "I am sorry I could not find a match for a {} energy and {} playful dog".format(
+                speech = """I am sorry I could not find a match for a {} energy, {} playful, 
+                and {} affectionate dog""".format(
                     slot_values["energy"]["resolved"],
                     slot_values["playfulness"]["resolved"],
+                    slot_values['affection']['resolved']
                 )
 
         except Exception as e:
@@ -267,7 +270,7 @@ class ResponseLogger(AbstractResponseInterceptor):
 
 
 # Data
-required_slots = ["energy", "playfulness"]
+required_slots = ["energy", "playfulness", "affection"]
 
 
 # Utility functions
@@ -330,7 +333,8 @@ def build_pet_match_options(slot_values):
 
     return {
         'energy_level': slot_values['energy']['resolved'],
-        'playfulness': slot_values['playfulness']['resolved']
+        'playfulness': slot_values['playfulness']['resolved'],
+        'affection': slot_values['affection']['resolved']
     }
 
 
