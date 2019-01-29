@@ -4,6 +4,7 @@ import logging
 import requests
 import six
 import random
+from os import environ
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.handler_input import HandlerInput
@@ -22,7 +23,10 @@ from ask_sdk_model.slu.entityresolution import StatusCode
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-initial_prompt = 'This is find my best dog. Are you ready to find the best dog for you?'
+api_base_url = environ.get('API_URL')
+environment = environ.get('ENVIRONMENT', '')
+
+initial_prompt = '{} This is find my best dog. Are you ready to find the best dog for you?'.format(environment)
 default_reprompt = 'Are you ready to find the best dog for you?'
 
 
@@ -101,8 +105,8 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
             response = http_get(pet_match_options)
 
             if response['breed'] and response['breed'] != 'None':
-                speech = """A {weight}, {energy_level} energy dog that {playfulness} playful and is {affection} 
-                affectionate and {training} to train is the {breed}. If you would like to learn more about {breed}, 
+                speech = """A {weight} sized, {energy_level} energy dog that is {playfulness} playful and is {affection} 
+                affectionate and is {training} difficult to train is the {breed}. If you would like to learn more about {breed}, 
                 say personality, description, or history.""".format(
                     energy_level=slot_values["energy"]["resolved"],
                     playfulness=slot_values['playfulness']['resolved'],
@@ -122,7 +126,7 @@ class CompletedPetMatchIntent(AbstractRequestHandler):
                 handler_input.attributes_manager.session_attributes = session_info
 
             else:
-                speech = """I am sorry I could not find a match for a {} {} energy, {} playful, {} easy to train
+                speech = """I am sorry I could not find a match for a {} {} energy, {} playful, {} difficulty to train
                 and {} affectionate dog. But you can cuddle with me. Do you want to try again?""".format(
                     slot_values['weight']['resolved'],
                     slot_values["energy"]["resolved"],
@@ -345,8 +349,8 @@ def build_pet_match_options(slot_values):
 
 
 def http_get(params):
-    base_url = 'https://68hccqr7x6.execute-api.us-east-1.amazonaws.com/dev/dog/alexa'
-    response = requests.get(url=base_url, params=params)
+    url = '{}{}'.format(api_base_url, 'dog/alexa')
+    response = requests.get(url=url, params=params)
 
     if response.status_code < 200 or response.status_code >= 300:
         response.raise_for_status()

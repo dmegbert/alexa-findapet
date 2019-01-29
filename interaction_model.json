@@ -20,7 +20,7 @@
                     "slots": [
                         {
                             "name": "energy",
-                            "type": "energyType",
+                            "type": "highMediumLowType",
                             "samples": [
                                 "{energy} energy",
                                 "{energy}"
@@ -28,7 +28,7 @@
                         },
                         {
                             "name": "playfulness",
-                            "type": "playfulnessType",
+                            "type": "highMediumLowType",
                             "samples": [
                                 "{playfulness} playful",
                                 "{playfulness}"
@@ -37,9 +37,45 @@
                         {
                             "name": "yes",
                             "type": "yesType"
+                        },
+                        {
+                            "name": "affection",
+                            "type": "highMediumLowType",
+                            "samples": [
+                                "I want a {affection} affectionate dog",
+                                "{affection} affectionate",
+                                "{affection} affection",
+                                "uhh {affection}",
+                                "um {affection}",
+                                "{affection}"
+                            ]
+                        },
+                        {
+                            "name": "training",
+                            "type": "highMediumLowType",
+                            "samples": [
+                                "{training} trainable",
+                                "{training} to train",
+                                "{training} dog",
+                                "{training}",
+                                "I want a {training} dog to train "
+                            ]
+                        },
+                        {
+                            "name": "weight",
+                            "type": "sizeType",
+                            "samples": [
+                                "kinda {weight}",
+                                "extra {weight}",
+                                "{weight}"
+                            ]
                         }
                     ],
                     "samples": [
+                        "find my best dog",
+                        "best dog",
+                        "get my best dog",
+                        "find my dog",
                         "{yes}"
                     ]
                 },
@@ -50,67 +86,49 @@
                 {
                     "name": "AMAZON.NavigateHomeIntent",
                     "samples": []
+                },
+                {
+                    "name": "DogInfoIntent",
+                    "slots": [
+                        {
+                            "name": "personality",
+                            "type": "personalityType"
+                        },
+                        {
+                            "name": "description",
+                            "type": "descriptionType"
+                        },
+                        {
+                            "name": "history",
+                            "type": "historyType"
+                        }
+                    ],
+                    "samples": [
+                        "give me the {history}",
+                        "{history}",
+                        "tell me the {history}",
+                        "give me the {description}",
+                        "tell me the {description}",
+                        "{description}",
+                        "more information",
+                        "{personality}",
+                        "tell me about {personality}",
+                        "information"
+                    ]
                 }
             ],
             "types": [
                 {
-                    "name": "energyType",
+                    "name": "highMediumLowType",
                     "values": [
                         {
                             "id": "1",
                             "name": {
                                 "value": "low",
                                 "synonyms": [
-                                    "chill",
-                                    "low energy",
-                                    "to cuddle with",
-                                    "to watch netflix with",
-                                    "lazy"
-                                ]
-                            }
-                        },
-                        {
-                            "id": "2",
-                            "name": {
-                                "value": "medium",
-                                "synonyms": [
-                                    "medium",
-                                    "mid",
-                                    "middle",
-                                    "medium energy",
-                                    "for my apartment",
-                                    "fun to play with",
-                                    "tug of war",
-                                    "plays tug of war"
-                                ]
-                            }
-                        },
-                        {
-                            "id": "3",
-                            "name": {
-                                "value": "high",
-                                "synonyms": [
-                                    "that I can run with",
-                                    "play frisbee",
-                                    "run",
-                                    "hike",
-                                    "go hiking",
-                                    "play fetch",
-                                    "energetic",
-                                    "high energy"
-                                ]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "playfulnessType",
-                    "values": [
-                        {
-                            "id": "1",
-                            "name": {
-                                "value": "low",
-                                "synonyms": [
+                                    "little",
+                                    "very easy",
+                                    "easy",
                                     "chill",
                                     "low playful",
                                     "not very",
@@ -124,6 +142,9 @@
                             "name": {
                                 "value": "medium",
                                 "synonyms": [
+                                    "goldilocks",
+                                    "goldilocks porridge",
+                                    "in the middle",
                                     "medium",
                                     "mid",
                                     "middle",
@@ -137,6 +158,11 @@
                             "name": {
                                 "value": "high",
                                 "synonyms": [
+                                    "a lot",
+                                    "super",
+                                    "very",
+                                    "difficult",
+                                    "hard",
                                     "super playful",
                                     "loves to play",
                                     "a joker"
@@ -167,6 +193,92 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "personalityType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "personality"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "descriptionType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "description",
+                                "synonyms": [
+                                    "details",
+                                    "information",
+                                    "info",
+                                    "describe"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "historyType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "history"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "sizeType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "jumbo",
+                                "synonyms": [
+                                    "horse",
+                                    "extra tall",
+                                    "massive",
+                                    "extra large",
+                                    "huge",
+                                    "gigantic"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "large",
+                                "synonyms": [
+                                    "tall",
+                                    "big"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "medium",
+                                "synonyms": [
+                                    "average",
+                                    "middle",
+                                    "goldiocks"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "small",
+                                "synonyms": [
+                                    "teeny",
+                                    "itsy bitsy",
+                                    "itsy",
+                                    "short",
+                                    "toy",
+                                    "tiny"
+                                ]
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -179,7 +291,7 @@
                     "slots": [
                         {
                             "name": "energy",
-                            "type": "energyType",
+                            "type": "highMediumLowType",
                             "confirmationRequired": false,
                             "elicitationRequired": true,
                             "prompts": {
@@ -195,12 +307,67 @@
                         },
                         {
                             "name": "playfulness",
-                            "type": "playfulnessType",
+                            "type": "highMediumLowType",
                             "confirmationRequired": false,
                             "elicitationRequired": true,
                             "prompts": {
                                 "elicitation": "Elicit.Slot.1117397975791.176377070562"
                             }
+                        },
+                        {
+                            "name": "affection",
+                            "type": "highMediumLowType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.793524642360.1075816257211"
+                            }
+                        },
+                        {
+                            "name": "training",
+                            "type": "highMediumLowType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.793524642360.1377451282358"
+                            }
+                        },
+                        {
+                            "name": "weight",
+                            "type": "sizeType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.793524642360.1194317307946"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "DogInfoIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "personality",
+                            "type": "personalityType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
+                        },
+                        {
+                            "name": "description",
+                            "type": "descriptionType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
+                        },
+                        {
+                            "name": "history",
+                            "type": "historyType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 }
@@ -253,7 +420,34 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "What level of playfulness do you want  low, medium or high?"
+                        "value": "What level of playfulness do you want. Low, medium or high?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.793524642360.1075816257211",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What level of affectioness do you want your dog to have.  High, medium, or low?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.793524642360.1377451282358",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "How difficult do you want it to be to train your dog. Easy, medium, or hard?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.793524642360.1194317307946",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What size dog do you want. Small Less than twenty pounds. Medium twenty to sixty pounds. Large sixty to one hundred pounds. Jumbo more than one hundred pounds?"
                     }
                 ]
             }
